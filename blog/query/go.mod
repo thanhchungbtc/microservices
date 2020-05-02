@@ -1,4 +1,4 @@
-module blog/comments
+module blog/query
 
 go 1.14
 
