@@ -2,7 +2,7 @@
   <b-card>
     <b-card-title>{{ post.title }}</b-card-title>
     <ul>
-      <li v-for="comment in post.comments" :key="comment.id">{{ comment.content }}</li>
+      <li v-for="comment in post.comments" :key="comment.id">{{ filteredContent(comment) }}</li>
     </ul>
 
     <div class="text-muted font-weight-bold">Comment</div>
@@ -30,6 +30,17 @@
         axios.post(`${COMMENT_SERVICE}/posts/${this.post.id}/comments`, {
           content: this.content,
         })
+      },
+
+      filteredContent(comment) {
+        const status = comment.status
+        if (status === 'pending') {
+          return "pending"
+        }
+        if (status === 'reject') {
+          return 'This comment is being rejected'
+        }
+        return comment.content
       }
     }
   }

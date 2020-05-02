@@ -29,7 +29,7 @@ func main() {
 			return
 		}
 
-		fmt.Printf("Received: %+v\n", event)
+		fmt.Printf("Received: %+v\n", event.Type)
 
 		// Handle event
 		switch event.Type {
@@ -38,8 +38,15 @@ func main() {
 			http.Post("http://localhost:4002/events", "application/json", bytes.NewReader(data))
 		case "CommentCreated":
 			data, _ := json.Marshal(event)
-			fmt.Printf("%+v", event)
 			http.Post("http://localhost:4002/events", "application/json", bytes.NewReader(data))
+			http.Post("http://localhost:4003/events", "application/json", bytes.NewReader(data))
+		case "CommentModerated":
+			data, _ := json.Marshal(event)
+			http.Post("http://localhost:4001/events", "application/json", bytes.NewReader(data))
+		case "CommentUpdated":
+			data, _ := json.Marshal(event)
+			http.Post("http://localhost:4002/events", "application/json", bytes.NewReader(data))
+
 		default:
 
 		}

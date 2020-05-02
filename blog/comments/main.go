@@ -17,6 +17,7 @@ type Comment struct {
 	ID      string `json:"id"`
 	Content string `json:"content"`
 	PostID  string `json:"post_id"`
+	Status  string `json:"status"`
 }
 
 var Comments map[string][]*Comment
@@ -56,22 +57,41 @@ func main() {
 		// create new comment
 		comment.ID = genCommentID()
 		comment.PostID = postID
+		comment.Status = "pending"
 		comments = append(comments, &comment)
 		Comments[postID] = comments
 
-		fmt.Printf("%+v", comment)
-
-		// edit event
+		// emit event
 		eventData := Event{
 			Type: "CommentCreated",
 			Data: comment,
 		}
 		data, _ := json.Marshal(eventData)
-		http.Post("http://localhost:4005/events", "application/json", bytes.NewReader(data))
+		go http.Post("http://localhost:4005/events", "application/json", bytes.NewReader(data))
 
 		c.JSON(http.StatusCreated, comment)
 	})
 
+	r.POST("/events", func(c *gin.Context) {
+		var event Event
+		if err := c.ShouldBind(&event); err != nil {
+			c.AbortWithError(http.StatusInternalServerError, err)
+			return
+		}
+
+		fmt.Printf("Process event: %v\n", event.Type)
+
+		switch event.Type {
+		case "CommentModerated":
+			// do more comment related stuff here
+			event := Event{
+				Type: "CommentUpdated",
+				Data: event.Data,
+			}
+			data, _ := json.Marshal(event)
+			go http.Post("http://localhost:4005/events", "application/json", bytes.NewReader(data))
+		}
+	})
 	addr := os.Getenv("APP_PORT")
 	if err := r.Run(":" + addr); err != nil {
 		log.Fatal("Posts failed starting")
