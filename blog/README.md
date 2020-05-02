@@ -10,5 +10,7 @@ The application contains several services
 ## Independent
 - Stop Post service and comment service and the app still working
 
+## Event bus
+
 ## Missing event
 

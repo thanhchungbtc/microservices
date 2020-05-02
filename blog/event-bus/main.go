@@ -18,6 +18,12 @@ type Event struct {
 	Data interface{}
 }
 
+var Events []*Event
+
+func init() {
+	Events = make([]*Event, 0)
+}
+
 func main() {
 	r := gin.Default()
 	r.Use(cors.Default())
@@ -30,6 +36,9 @@ func main() {
 		}
 
 		fmt.Printf("Received: %+v\n", event.Type)
+
+		// Saving the event
+		Events = append(Events, &event)
 
 		// Handle event
 		switch event.Type {
@@ -51,6 +60,10 @@ func main() {
 
 		}
 
+	})
+
+	r.GET("/events", func(c *gin.Context) {
+		c.JSON(http.StatusOK, Events)
 	})
 
 	addr := os.Getenv("APP_PORT")
