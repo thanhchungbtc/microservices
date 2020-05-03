@@ -4,3 +4,47 @@ deploy:
   kubectl:
     manifests:
       - ./infra/k8s/*
+build:
+  local:
+    push: false
+  artifacts:
+    - image: thanhchungbtc/client
+      context: client
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '**/*.main.go'
+            dest: .
+    - image: thanhchungbtc/comments
+      context: comments
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '**/*.main.go'
+            dest: .
+    - image: thanhchungbtc/query
+      context: query
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '**/*.main.go'
+            dest: .
+    - image: thanhchungbtc/moderation
+      context: moderation
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '**/*.main.go'
+            dest: .
+    - image: thanhchungbtc/event-bus
+      context: event-bus
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '**/*.main.go'
+            dest: .
