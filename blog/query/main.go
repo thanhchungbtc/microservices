@@ -58,7 +58,7 @@ func main() {
 	addr := os.Getenv("APP_PORT")
 
 	go func() {
-		res, _ := http.Get("http://localhost:4005/events")
+		res, _ := http.Get("http://event-bus-srv:4005/events")
 		var events []*Event
 		data, _ := ioutil.ReadAll(res.Body)
 		if err := json.Unmarshal(data, &events); err != nil {

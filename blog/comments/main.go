@@ -67,7 +67,7 @@ func main() {
 			Data: comment,
 		}
 		data, _ := json.Marshal(eventData)
-		go http.Post("http://localhost:4005/events", "application/json", bytes.NewReader(data))
+		go http.Post("http://event-bus-srv:4005/events", "application/json", bytes.NewReader(data))
 
 		c.JSON(http.StatusCreated, comment)
 	})
@@ -89,7 +89,7 @@ func main() {
 				Data: event.Data,
 			}
 			data, _ := json.Marshal(event)
-			go http.Post("http://localhost:4005/events", "application/json", bytes.NewReader(data))
+			go http.Post("http://event-bus-srv:4005/events", "application/json", bytes.NewReader(data))
 		}
 	})
 	addr := os.Getenv("APP_PORT")

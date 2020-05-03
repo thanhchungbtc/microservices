@@ -60,7 +60,7 @@ func main() {
 					Data: comment,
 				}
 				data, _ := json.Marshal(event)
-				http.Post("http://localhost:4005/events", "application/json", bytes.NewReader(data))
+				http.Post("http://event-bus-srv:4005/events", "application/json", bytes.NewReader(data))
 			}(comment)
 
 		}
