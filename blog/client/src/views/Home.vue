@@ -43,7 +43,7 @@
 
     methods: {
       submitPost() {
-        axios.post(`${POST_SERVICE}/posts`, {title: this.title})
+        axios.post(`${POST_SERVICE}/posts/create`, {title: this.title})
       },
 
     }

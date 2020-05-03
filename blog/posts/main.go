@@ -48,7 +48,7 @@ func main() {
 		c.JSON(http.StatusOK, Posts)
 	})
 
-	r.POST("/posts", func(c *gin.Context) {
+	r.POST("/posts/create", func(c *gin.Context) {
 		var post Post
 		if err := c.ShouldBind(&post); err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
