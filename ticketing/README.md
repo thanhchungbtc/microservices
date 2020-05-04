@@ -1,4 +1,6 @@
 ## Services
+- Auth
+
 ### Auth
 - POST /api/users/signUp
 ```json
@@ -11,4 +13,3 @@
 - POST /api/users/signin
 - POST /api/users/signout
 - GET /api/users/currentUser
-

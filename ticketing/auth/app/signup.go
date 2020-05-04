@@ -10,10 +10,10 @@ type signUpRequest struct {
 	Password string `json:"password" binding:"required,min=4,max=20"`
 }
 
-func (a *App) signUp(c *gin.Context) {
+func (h *handler) signUp(c *gin.Context) {
 	var request signUpRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
-		abortWithError(c, http.StatusBadRequest, err)
+		abortWithError(c, &ErrValidation{err})
 		return
 	}
 

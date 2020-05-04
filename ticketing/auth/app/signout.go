@@ -5,6 +5,6 @@ import (
 	"net/http"
 )
 
-func (a *App) signOut(c *gin.Context) {
+func (h *handler) signOut(c *gin.Context) {
 	c.String(http.StatusOK, "Hi there")
 }

@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func (a *App) currentUser(c *gin.Context) {
+func (h *handler) currentUser(c *gin.Context) {
 	c.String(http.StatusOK, "Hi there")
 }
 
