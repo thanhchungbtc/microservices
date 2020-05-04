@@ -3,6 +3,7 @@ package app
 import (
 	"fmt"
 	"github.com/go-playground/validator/v10"
+	"runtime/debug"
 )
 
 type errorResponse struct {
@@ -18,6 +19,18 @@ type Error interface {
 	StatusCode() int
 	Error() string
 	Json() []errorResponse
+}
+
+type ErrBadRequest struct {
+	error
+}
+
+func (e ErrBadRequest) StatusCode() int {
+	return 400
+}
+
+func (e ErrBadRequest) Json() []errorResponse {
+	return []errorResponse{newErrorResponse(e.Error())}
 }
 
 type ErrDatabaseConnection struct {
@@ -64,8 +77,9 @@ func (v ErrValidation) Json() (errResponses []errorResponse) {
 		}
 	default:
 		errResponses = append(errResponses, errorResponse{
-			Message: "Invalid data",
+			Message: err.Error(),
 		})
 	}
+	debug.PrintStack()
 	return errResponses
 }

@@ -3,30 +3,32 @@ package app
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"ticketing/auth/database"
 )
 
-type handler struct {
-	r *gin.Engine
+type app struct {
+	r  *gin.Engine
+	db *database.Database
 }
 
-func New() *handler {
+func New(db *database.Database) *app {
 	r := gin.Default()
-	h := &handler{r: r}
+	a := &app{r: r, db: db}
 
-	r.GET("/ping", h.ping)
-	r.POST("/api/users/signin", h.signIn)
-	r.POST("/api/users/signout", h.signOut)
-	r.POST("/api/users/signup", h.signUp)
-	r.GET("/api/users/currentUser", h.currentUser)
+	r.GET("/ping", a.ping)
+	r.POST("/api/users/signin", a.signIn)
+	r.POST("/api/users/signout", a.signOut)
+	r.POST("/api/users/signup", a.signUp)
+	r.GET("/api/users/currentUser", a.currentUser)
 
-	return h
+	return a
 }
 
-func (h *handler) Run(addr string) error {
-	return h.r.Run(addr)
+func (a *app) Run(addr string) error {
+	return a.r.Run(addr)
 }
 
-func (h *handler) ping(c *gin.Context) {
+func (a *app) ping(c *gin.Context) {
 	c.String(http.StatusOK, "Pong")
 }
 
