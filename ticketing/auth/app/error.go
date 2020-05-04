@@ -1,11 +1,9 @@
 package app
 
 import (
-	"errors"
 	"fmt"
 	"github.com/go-playground/validator/v10"
 )
-var ErrTest = errors.New("error")
 
 type errorResponse struct {
 	Message string `json:"message"`
@@ -25,6 +23,7 @@ type Error interface {
 type ErrDatabaseConnection struct {
 	error
 }
+
 func (e ErrDatabaseConnection) StatusCode() int {
 	return 400
 }
@@ -63,6 +62,10 @@ func (v ErrValidation) Json() (errResponses []errorResponse) {
 				Field:   e.Field(),
 			})
 		}
+	default:
+		errResponses = append(errResponses, errorResponse{
+			Message: "Invalid data",
+		})
 	}
 	return errResponses
 }
