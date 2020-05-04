@@ -1,5 +1,9 @@
 ## Services
 - Auth
+- Tickets
+- Orders
+- Payments
+- Expiration
 
 ### Auth
 - POST /api/users/signUp
