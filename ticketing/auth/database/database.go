@@ -21,7 +21,8 @@ func New() (*Database, error) {
 }
 
 func connectToDB() (*mongo.Database, error) {
-	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://auth-mongo-srv:27017"))
+	//client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://auth-mongo-srv:27017"))
+	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
 	if err != nil {
 		return nil, err
 	}

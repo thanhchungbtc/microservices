@@ -1,8 +1,10 @@
 package app
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"runtime/debug"
 	"ticketing/auth/database"
 )
 
@@ -33,6 +35,7 @@ func (a *app) ping(c *gin.Context) {
 }
 
 func abortWithError(c *gin.Context, err error) {
+
 	type Response struct {
 		Errors []errorResponse `json:"errors"`
 	}
@@ -40,13 +43,18 @@ func abortWithError(c *gin.Context, err error) {
 	var code int
 
 	switch err := err.(type) {
-	case Error:
-		code = err.StatusCode()
-		response.Errors = err.Json()
-
+	case ErrBadRequest:
+		code = http.StatusBadRequest
+		response.Errors = err.Responses()
 	default:
-		code = http.StatusInternalServerError
-		response.Errors = []errorResponse{newErrorResponse("oops. Something went wrong.")}
+		switch err {
+		case ErrDatabaseConnection:
+			code = http.StatusInternalServerError
+		default:
+			fmt.Printf("Error: %+v\n ", err)
+			debug.PrintStack()
+		}
+		response.Errors = []errorResponse{errorResponse{Message: err.Error()}}
 	}
 
 	c.AbortWithStatusJSON(code, response)

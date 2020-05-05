@@ -3,6 +3,7 @@ package database
 import (
 	"context"
 	"fmt"
+	"github.com/dgrijalva/jwt-go"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -66,4 +67,22 @@ func (db *Database) GetUsers() (users []User, err error) {
 	}
 
 	return users, nil
+}
+
+func (db *Database) GetJWT(user *User) (string, error) {
+	type claims struct {
+		*User
+		jwt.StandardClaims
+	}
+	cl := claims{
+		user,
+		jwt.StandardClaims{},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, cl)
+	tokenStr, err := token.SignedString([]byte("secret"))
+	if err != nil {
+		return "", err
+	}
+	return tokenStr, nil
+
 }

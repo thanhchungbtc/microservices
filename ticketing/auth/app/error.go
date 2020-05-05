@@ -1,9 +1,14 @@
 package app
 
 import (
+	"errors"
 	"fmt"
 	"github.com/go-playground/validator/v10"
-	"runtime/debug"
+)
+
+var (
+	ErrDatabaseConnection = errors.New("failed to connect to database")
+	ErrNotFound           = errors.New("not found")
 )
 
 type errorResponse struct {
@@ -11,62 +16,11 @@ type errorResponse struct {
 	Field   string `json:"field,omitempty"`
 }
 
-func newErrorResponse(msg string) errorResponse {
-	return errorResponse{Message: msg}
-}
-
-type Error interface {
-	StatusCode() int
-	Error() string
-	Json() []errorResponse
-}
-
 type ErrBadRequest struct {
 	error
 }
 
-func (e ErrBadRequest) StatusCode() int {
-	return 400
-}
-
-func (e ErrBadRequest) Json() []errorResponse {
-	return []errorResponse{newErrorResponse(e.Error())}
-}
-
-type ErrDatabaseConnection struct {
-	error
-}
-
-func (e ErrDatabaseConnection) StatusCode() int {
-	return 400
-}
-
-func (e ErrDatabaseConnection) Json() []errorResponse {
-	return []errorResponse{newErrorResponse(e.Error())}
-}
-
-// ErrNotFound
-type ErrNotFound struct {
-	error
-}
-
-func (ErrNotFound) StatusCode() int {
-	return 404
-}
-
-func (e ErrNotFound) Json() []errorResponse {
-	return []errorResponse{newErrorResponse(e.Error())}
-}
-
-// ErrValidation
-type ErrValidation struct {
-	error
-}
-
-func (ErrValidation) StatusCode() int {
-	return 400
-}
-func (v ErrValidation) Json() (errResponses []errorResponse) {
+func (v ErrBadRequest) Responses() (errResponses []errorResponse) {
 	switch err := v.error.(type) {
 	case validator.ValidationErrors:
 		for _, e := range err {
@@ -80,6 +34,5 @@ func (v ErrValidation) Json() (errResponses []errorResponse) {
 			Message: err.Error(),
 		})
 	}
-	debug.PrintStack()
 	return errResponses
 }

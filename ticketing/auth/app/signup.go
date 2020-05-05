@@ -15,18 +15,22 @@ type signUpRequest struct {
 func (a *app) signUp(c *gin.Context) {
 	var request signUpRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
-		abortWithError(c, &ErrValidation{err})
+		abortWithError(c, &ErrBadRequest{err})
 		return
 	}
 	if exists, _ := a.db.IsUserExists(request.Email); exists {
-		abortWithError(c, ErrBadRequest{errors.New("Email in use")})
+		abortWithError(c, ErrBadRequest{errors.New("email in use")})
 		return
 	}
+
 	user, _ := a.db.CreateUser(database.User{
 		Email:    request.Email,
 		Password: request.Password,
 	})
-	c.JSON(http.StatusCreated, user)
-	return
 
+	jwt, _ := a.db.GetJWT(user)
+
+	c.SetCookie("jwt", jwt, 3600, "/", "", false, true)
+	c.JSON(http.StatusCreated, jwt)
+	return
 }
