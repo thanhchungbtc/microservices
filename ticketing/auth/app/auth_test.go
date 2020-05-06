@@ -36,3 +36,7 @@ func TestSignUp(t *testing.T) {
 		}
 	}
 }
+
+func TestSignOut(t *testing.T) {
+
+}
