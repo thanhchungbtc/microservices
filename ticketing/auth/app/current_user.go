@@ -6,6 +6,8 @@ import (
 )
 
 func (h *app) currentUser(c *gin.Context) {
-	c.String(http.StatusOK, "Hi there")
+	user, _ := c.Get("user")
+	c.JSON(http.StatusOK, gin.H{
+		"currentUser": user,
+	})
 }
-

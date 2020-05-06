@@ -2,9 +2,10 @@ package app
 
 import (
 	"errors"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"ticketing/auth/database"
+
+	"github.com/gin-gonic/gin"
 )
 
 type signUpRequest struct {
@@ -31,6 +32,6 @@ func (a *app) signUp(c *gin.Context) {
 	jwt, _ := a.db.GetJWT(user)
 
 	c.SetCookie("jwt", jwt, 3600, "/", "", false, true)
-	c.JSON(http.StatusCreated, jwt)
+	c.JSON(http.StatusOK, jwt)
 	return
 }

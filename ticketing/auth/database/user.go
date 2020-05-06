@@ -14,7 +14,7 @@ import (
 type User struct {
 	ID       string `json:"id"`
 	Email    string `json:"email"`
-	Password string `json:"password"`
+	Password string `json:"-"`
 }
 
 func (db *Database) CreateUser(user User) (*User, error) {
@@ -45,7 +45,7 @@ func (db *Database) IsUserExists(email string) (result bool, err error) {
 	return true, nil
 }
 
-func (db *Database) GetUsers() (users []User, err error) {
+func (db *Database) ListUsers() (users []User, err error) {
 	collection := db.Collection("users")
 
 	cur, err := collection.Find(context.Background(), bson.D{{}}, options.Find())
@@ -67,6 +67,21 @@ func (db *Database) GetUsers() (users []User, err error) {
 	}
 
 	return users, nil
+}
+
+func (db *Database) GetUser(email string) (*User, error) {
+	collection := db.Collection("users")
+	cur := collection.FindOne(context.Background(), bson.M{
+		"email": email,
+	})
+	if err := cur.Err(); err != nil {
+		return nil, err
+	}
+	var user User
+	if err := cur.Decode(&user); err != nil {
+		return nil, err
+	}
+	return &user, nil
 }
 
 func (db *Database) GetJWT(user *User) (string, error) {

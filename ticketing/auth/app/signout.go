@@ -6,5 +6,6 @@ import (
 )
 
 func (h *app) signOut(c *gin.Context) {
-	c.String(http.StatusOK, "Hi there")
+	c.SetCookie("jwt", "", -1, "/", "", false, true)
+	c.String(http.StatusOK, "Logged out")
 }
