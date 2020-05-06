@@ -4,7 +4,7 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"ticketing/auth/database"
+	"ticketing/auth/model"
 	"ticketing/auth/services"
 )
 
@@ -20,7 +20,7 @@ func (a *app) signIn(c *gin.Context) {
 		return
 	}
 
-	var user *database.User
+	var user *model.User
 	var err error
 	if user, err = a.db.GetUser(req.Email); err != nil {
 		abortWithError(c, ErrBadRequest{errors.New("invalid user")})

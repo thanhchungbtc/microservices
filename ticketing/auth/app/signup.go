@@ -3,7 +3,7 @@ package app
 import (
 	"errors"
 	"net/http"
-	"ticketing/auth/database"
+	"ticketing/auth/model"
 
 	"github.com/gin-gonic/gin"
 )
@@ -24,7 +24,7 @@ func (a *app) signUp(c *gin.Context) {
 		return
 	}
 
-	user, _ := a.db.CreateUser(database.User{
+	user, _ := a.db.CreateUser(model.User{
 		Email:    request.Email,
 		Password: request.Password,
 	})

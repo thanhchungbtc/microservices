@@ -21,6 +21,10 @@ func New() (*Database, error) {
 	return &Database{db}, nil
 }
 
+func (db *Database) NewUserRepository() *UserRepository {
+	return &UserRepository{db: db}
+}
+
 func connectToDB() (*mongo.Database, error) {
 	//client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://auth-mongo-srv:27017"))
 	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
