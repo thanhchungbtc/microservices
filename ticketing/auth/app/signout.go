@@ -5,7 +5,9 @@ import (
 	"net/http"
 )
 
-func (h *app) signOut(c *gin.Context) {
-	c.SetCookie("jwt", "", -1, "/", "", false, true)
-	c.String(http.StatusOK, "Logged out")
+func signOut() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.SetCookie("jwt", "", -1, "/", "", false, true)
+		c.String(http.StatusOK, "Logged out")
+	}
 }

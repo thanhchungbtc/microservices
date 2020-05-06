@@ -21,7 +21,7 @@ func New() (*Database, error) {
 	return &Database{db}, nil
 }
 
-func (db *Database) NewUserRepository() *UserRepository {
+func NewUserRepository(db *Database) *UserRepository {
 	return &UserRepository{db: db}
 }
 

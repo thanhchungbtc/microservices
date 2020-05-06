@@ -18,12 +18,14 @@ func New(db *database.Database) *app {
 	r := gin.Default()
 	a := &app{r: r, db: db}
 
-	r.GET("/ping", a.ping)
-	r.POST("/api/users/signin", a.signIn)
-	r.POST("/api/users/signout", a.signOut)
-	r.POST("/api/users/signup", a.signUp)
+	userRepo := database.NewUserRepository(db)
 
-	r.Use(a.authRequired()).
+	r.GET("/ping", a.ping)
+	r.POST("/api/users/signin", signIn(userRepo))
+	r.POST("/api/users/signout", signOut())
+	r.POST("/api/users/signup", signUp(userRepo))
+
+	r.Use(authRequired()).
 		GET("/api/users/currentUser", a.currentUser)
 
 	return a
@@ -37,7 +39,7 @@ func (a *app) ping(c *gin.Context) {
 	c.String(http.StatusOK, "Pong")
 }
 
-func (a *app) authRequired() gin.HandlerFunc {
+func authRequired() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenStr, err := c.Cookie("jwt")
 		if err != nil {
@@ -79,6 +81,7 @@ func abortWithError(c *gin.Context, err error) {
 		case ErrDatabaseConnection:
 			code = http.StatusInternalServerError
 		default:
+			code = http.StatusBadRequest
 			fmt.Printf("Error: %+v\n ", err)
 			debug.PrintStack()
 		}
